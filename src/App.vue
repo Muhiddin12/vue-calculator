@@ -1,38 +1,40 @@
 <template>
   <div class="calculator">
-    <div class="view">
-      <input type="text" ref="display" class="display" />
+    <div class="ui">
+      <div class="view">
+        <div class="display" ref="display"></div>
+      </div>
     </div>
     <table @click="table">
       <tr>
         <td class="blackColor clearColor">C</td>
         <td class="back blackColor">Back</td>
-        <td class="blackColor">+/-</td>
-        <td class="gold">%</td>
+        <td class="blackColor">%</td>
+        <td class="gold">*</td>
       </tr>
       <tr>
         <td class="number">7</td>
         <td class="number">8</td>
         <td class="number">9</td>
-        <td class="gold">*</td>
+        <td class="gold">/</td>
       </tr>
       <tr>
         <td class="number">4</td>
         <td class="number">5</td>
         <td class="number">6</td>
-        <td class="gold">/</td>
+        <td class="gold">-</td>
       </tr>
       <tr>
         <td class="number">1</td>
         <td class="number">2</td>
         <td class="number">3</td>
-        <td class="gold">-</td>
+        <td class="gold">+</td>
       </tr>
       <tr>
         <td class="number zero">0</td>
+        <td class="number">00</td>
         <td class="number">.</td>
-        <td class="number">=</td>
-        <td class="gold plus">+</td>
+        <td class="gold right">=</td>
       </tr>
     </table>
   </div>
@@ -44,20 +46,54 @@ export default {
   methods: {
     table(event) {
       let character = event.target.closest("td").innerText;
-      if (character == "C") {
-        this.$refs.display.value = "";
+      let fullWord = this.$refs.display.innerText;
+      let lastWord = fullWord.slice(fullWord.length - 1, fullWord.length);
+      console.log(character);
+      console.log(lastWord);
+
+      if (character == "=" && fullWord.includes("%")) {
+        let protsentIndex = fullWord.indexOf("%");
+        let beforeProtsent = fullWord.slice(0, protsentIndex);
+        let afterProtsent = fullWord.slice(protsentIndex + 1, fullWord.length);
+        this.$refs.display.innerText = (beforeProtsent * afterProtsent) / 100;
+        // alert(beforeProtsent);
+        // alert(afterProtsent);
+      } else if (character == "C") {
+        this.$refs.display.innerText = "";
+      } else if (character == "=" && this.$refs.display.innerText == "") {
+        alert("Xato !");
       } else if (character == "=") {
-        this.$refs.display.value = eval(this.$refs.display.value);
+        this.$refs.display.innerText = eval(this.$refs.display.innerText);
       } else if (character == "Back") {
-        this.$refs.display.value = this.$refs.display.value.slice(
+        this.$refs.display.innerText = this.$refs.display.innerText.slice(
           0,
-          this.$refs.display.value.length - 1
+          this.$refs.display.innerText.length - 1
         );
       } else if (character == "+/-") {
         console.log("ok");
-        this.$refs.display.value = "(-" + this.$refs.display.value;
+        this.$refs.display.innerText = "(-" + this.$refs.display.innerText;
+      } else if (
+        character == lastWord &&
+        character != 1 &&
+        character != 2 &&
+        character != 3 &&
+        character != 4 &&
+        character != 5 &&
+        character != 6 &&
+        character != 7 &&
+        character != 8 &&
+        character != 9 &&
+        character != 0
+      ) {
+        alert("Xato !");
+        this.$refs.display.innerText = "";
+      } else if (
+        (character == "*" || character == "/") &&
+        (lastWord == "%" || character == "-")
+      ) {
+        alert("!Number");
       } else {
-        this.$refs.display.value += character;
+        this.$refs.display.innerText += character;
       }
     },
   },
@@ -73,24 +109,38 @@ export default {
 body {
   background: #333333;
 }
+.ui {
+  width: 310px;
+  background: #131313;
+  border-radius: 18px 18px 0 0;
+}
 .calculator {
-  max-width: 320px;
+  max-width: 310px;
   margin-top: 90px;
   border-radius: 18px;
   margin: 90px auto;
 }
-.display {
-  width: 100%;
+.view {
+  margin: 0 10px;
+  padding: 0;
   height: 100px;
+  overflow-x: auto;
+  width: 290px;
+  display: flex;
+}
+.view::-webkit-scrollbar {
+  width: 0;
+}
+.display {
+  margin: 30px 12px;
+  width: 290px;
   box-sizing: border-box;
   caret-color: white;
   font-size: 60px;
-  border-radius: 18px 18px 0 0;
-  padding: 0 14px;
   text-align: right;
-  background: #151515;
   color: white;
   font-size: 40px;
+  border: none;
 }
 table {
   width: 100%;
@@ -102,8 +152,8 @@ table {
 td {
   text-align: center;
   width: 25%;
-  height: 70px;
-  font-size: 35px;
+  height: 60px;
+  font-size: 30px;
 }
 .blackColor {
   background: #4a4a4a;
@@ -122,11 +172,15 @@ td:hover {
   cursor: pointer;
   transition: 0.6s;
 }
+td:active {
+  font-size: 22px;
+  transition: 0.6s;
+}
 .back {
   font-size: 25px;
   font-weight: 300;
 }
-.plus {
+.right {
   border-radius: 0 0 18px 0;
 }
 .zero {
@@ -137,4 +191,3 @@ td:hover {
   font-weight: 300;
 }
 </style>
-
