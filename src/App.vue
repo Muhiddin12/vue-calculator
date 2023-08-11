@@ -56,8 +56,6 @@ export default {
         let beforeProtsent = fullWord.slice(0, protsentIndex);
         let afterProtsent = fullWord.slice(protsentIndex + 1, fullWord.length);
         this.$refs.display.innerText = (beforeProtsent * afterProtsent) / 100;
-        // alert(beforeProtsent);
-        // alert(afterProtsent);
       } else if (character == "C") {
         this.$refs.display.innerText = "";
       } else if (character == "=" && this.$refs.display.innerText == "") {
@@ -69,9 +67,6 @@ export default {
           0,
           this.$refs.display.innerText.length - 1
         );
-      } else if (character == "+/-") {
-        console.log("ok");
-        this.$refs.display.innerText = "(-" + this.$refs.display.innerText;
       } else if (
         character == lastWord &&
         character != 1 &&
